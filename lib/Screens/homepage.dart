@@ -40,7 +40,6 @@ Widget buildHorizontalListView(BuildContext context) => SizedBox(
               verticalSpacing: 0.00,
               delay: 0,
               xOffset: 0.35);
-          // buildHorizontalContainer(index);
         }));
 
 Widget buildVerticalListView(BuildContext context) => Expanded(
@@ -52,19 +51,19 @@ Widget buildVerticalListView(BuildContext context) => Expanded(
               index: context,
               horizontalSpacing: 0.00,
               verticalSpacing: 10.00,
-              delay: 0,
+              delay: 900,
               xOffset: 0.0);
-          // buildVerticalContainer(index);
         }));
 
 Widget buildContainer(
-        {index, horizontalSpacing, verticalSpacing, delay, xOffset=0.0}) =>
+        {index, horizontalSpacing, verticalSpacing, delay, xOffset = 0.0}) =>
     DelayedDisplay(
       delay: Duration(milliseconds: delay),
-      slidingBeginOffset: Offset(xOffset, 0.0),
+      slidingBeginOffset:
+          xOffset != 0 ? Offset(xOffset, 0.0) : const Offset(0.0, 0.35),
       child: Padding(
         padding: EdgeInsets.symmetric(
-            vertical: horizontalSpacing, horizontal: horizontalSpacing),
+            vertical: verticalSpacing, horizontal: horizontalSpacing),
         child: Container(
           height: 100,
           width: 100,
@@ -72,28 +71,3 @@ Widget buildContainer(
         ),
       ),
     );
-
-// Widget buildHorizontalContainer(int index) => DelayedDisplay(
-//       delay: const Duration(milliseconds: 0),
-//       slidingBeginOffset: const Offset(0.35, 0.0),
-//       child: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 10.00),
-//         child: Container(
-//           height: 100,
-//           width: 100,
-//           color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-//         ),
-//       ),
-//     );
-
-// Widget buildVerticalContainer(int index) => DelayedDisplay(
-//       delay: const Duration(milliseconds: 0),
-//       child: Padding(
-//         padding: const EdgeInsets.symmetric(vertical: 10.00),
-//         child: Container(
-//           height: 100,
-//           width: 100,
-//           color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-//         ),
-//       ),
-//     );
