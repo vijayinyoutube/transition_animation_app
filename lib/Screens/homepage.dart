@@ -14,12 +14,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   double visiblePercentage = 0.0;
-  var key;
+  bool canShow = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Animation"),
+        actions: [
+          IconButton(
+              onPressed: () => setState(() {
+                    canShow = true;
+                  }),
+              icon: const Icon(Icons.add))
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -46,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
         key: UniqueKey(),
         onVisibilityChanged: (visibilityInfo) {
           visiblePercentage = visibilityInfo.visibleFraction * 100;
-          key = visibilityInfo.key;
           debugPrint(
               'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
         },
@@ -58,13 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   return buildContainer(
-                      index: context,
-                      horizontalSpacing: 10.00,
-                      verticalSpacing: 0.00,
-                      delay: 800,
-                      xOffset: 0.35,
-                      yOffset: 0.0,
-                      myKey: key);
+                    horizontalSpacing: 10.00,
+                    verticalSpacing: 0.00,
+                    delay: 800,
+                    xOffset: 0.35,
+                    yOffset: 0.0,
+                  );
                 })),
       );
 
@@ -74,7 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
           itemCount: 50,
           itemBuilder: (context, index) {
             return buildContainer(
-                index: context,
                 horizontalSpacing: 0.00,
                 verticalSpacing: 10.00,
                 delay: 800,
@@ -83,28 +87,23 @@ class _MyHomePageState extends State<MyHomePage> {
           }));
 
   Widget buildContainer(
-          {index,
-          horizontalSpacing,
+          {horizontalSpacing,
           verticalSpacing,
           delay,
           xOffset = 0.0,
-          yOffset = 0.0,
-          myKey}) =>
-      Container(
-        key: myKey,
-        child: DelayedDisplay(
-          delay: Duration(milliseconds: delay),
-          slidingBeginOffset: Offset(xOffset, yOffset),
-          fadingDuration: Duration(milliseconds: delay),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: verticalSpacing, horizontal: horizontalSpacing),
-            child: Container(
-              height: 100,
-              width: 100,
-              color:
-                  Colors.primaries[Random().nextInt(Colors.primaries.length)],
-            ),
+          yOffset = 0.0}) =>
+      DelayedDisplay(
+        delay: Duration(milliseconds: delay),
+        slidingBeginOffset: Offset(xOffset, yOffset),
+        fadingDuration: Duration(milliseconds: delay),
+        fadeIn: canShow,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: verticalSpacing, horizontal: horizontalSpacing),
+          child: Container(
+            height: 100,
+            width: 100,
+            color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
           ),
         ),
       );
