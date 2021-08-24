@@ -33,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
           children: [
             const HeightSpacer(myHeight: 10.00),
-
             // buildVerticalListView(context),
             buildHorizontalListView(context),
             buildHorizontalListView(context),
