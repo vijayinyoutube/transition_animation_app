@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:transition_animation_app/Widgets/spacer.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -13,78 +12,81 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double visiblePercentage = 0.0;
-  bool canShow = false;
+  ScrollController _scrollController = new ScrollController();
+  bool shouldAnimate = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 50) {
+        setState(() {
+          shouldAnimate = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Animation"),
-        actions: [
-          IconButton(
-              onPressed: () => setState(() {
-                    canShow = true;
-                  }),
-              icon: const Icon(Icons.add))
-        ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-            child: Column(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const HeightSpacer(myHeight: 10.00),
-
-            // buildVerticalListView(context),
-            buildHorizontalListView(context),
-            buildHorizontalListView(context),
-            buildHorizontalListView(context),
-            buildHorizontalListView(context),
-            buildHorizontalListView(context),
-            buildHorizontalListView(context),
             buildHorizontalListView(context),
             const HeightSpacer(myHeight: 10.00),
+            buildVerticalListView(context, _scrollController),
           ],
-        )),
+        ),
       ),
     );
   }
 
-  Widget buildHorizontalListView(BuildContext context) => VisibilityDetector(
-        key: UniqueKey(),
-        onVisibilityChanged: (visibilityInfo) {
-          visiblePercentage = visibilityInfo.visibleFraction * 100;
-          debugPrint(
-              'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
-        },
-        child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 150,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return buildContainer(
-                    horizontalSpacing: 10.00,
-                    verticalSpacing: 0.00,
-                    delay: 800,
-                    xOffset: 0.35,
-                    yOffset: 0.0,
-                  );
-                })),
-      );
-
-  Widget buildVerticalListView(BuildContext context) => Expanded(
+  Widget buildHorizontalListView(BuildContext context) => SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 150,
       child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: 50,
+          scrollDirection: Axis.horizontal,
+          itemCount: 10,
+          physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) {
             return buildContainer(
-                horizontalSpacing: 0.00,
-                verticalSpacing: 10.00,
-                delay: 800,
-                xOffset: 0.0,
-                yOffset: 0.35);
+              horizontalSpacing: 10.00,
+              verticalSpacing: 0.00,
+              delay: 0,
+              xOffset: 0.35,
+              yOffset: 0.0,
+            );
           }));
+
+  Widget buildVerticalListView(
+          BuildContext context, ScrollController _scrollController) =>
+      Expanded(
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: 50,
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return buildContainer(
+                    horizontalSpacing: 0.00,
+                    verticalSpacing: 10.00,
+                    delay: 900,
+                    xOffset: 0.0,
+                    yOffset: 0.35);
+              }));
 
   Widget buildContainer(
           {horizontalSpacing,
@@ -93,10 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
           xOffset = 0.0,
           yOffset = 0.0}) =>
       DelayedDisplay(
-        delay: Duration(milliseconds: delay),
+        delay: shouldAnimate
+            ? Duration(milliseconds: delay)
+            : const Duration(milliseconds: 0),
         slidingBeginOffset: Offset(xOffset, yOffset),
-        fadingDuration: Duration(milliseconds: delay),
-        fadeIn: canShow,
+        fadingDuration: shouldAnimate
+            ? const Duration(milliseconds: 800)
+            : const Duration(milliseconds: 0),
         child: Padding(
           padding: EdgeInsets.symmetric(
               vertical: verticalSpacing, horizontal: horizontalSpacing),
