@@ -22,7 +22,7 @@
 
 
 <p align="center">
-<img src="" width="100%">
+<img src="https://user-images.githubusercontent.com/58719230/131326830-763b03ba-1dc4-4976-830c-581170815404.png" width="100%">
 </p>
 
 
@@ -36,7 +36,7 @@
 ## App
 
   
-Check out the video tutorial 👉 : 
+Check out the video tutorial 👉 : https://youtu.be/zogGHnN54hM
 
 To know more awesome content about Flutter., 
 
@@ -46,6 +46,7 @@ Visit my channel 👉 : https://www.youtube.com/channel/UCBC_Z7jla1GSITcqLKAtPxQ
 
 ## Dependencies
 ```pubspec.yaml
+  delayed_display: ^2.0.0
 ```
 
 
